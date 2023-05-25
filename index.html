@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Plotter</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+  
+      .container {
+        width: 600px;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+  
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+  
+      .form-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+  
+      label {
+        margin-right: 10px;
+      }
+  
+      .range-label {
+        font-weight: bold;
+      }
+  
+      .button-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+  
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+  
+      th,
+      td {
+        padding: 8px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+  
+      th {
+        background-color: #f2f2f2;
+      }
+  
+      tr:hover {
+        background-color: #f9f9f9;
+      }
+  
+      .plot-container {
+        width: 100%;
+        max-width: 700px;
+        margin-top: 20px;
+      }
+    div {
+      margin: 10px;
+      padding: 10px;
+    }
+    .graph {
+      display: flex;
+      justify-content: center;
+    }
+    tr {
+      z-index: 20;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-group">
+  
+            <label for="dataset" id="dataset-label">Data Set:</label>
+            <input
+              type="range"
+              id="dataset"
+              min="1"
+              max="3"
+              onchange="updateDatasetLabel(this.value)"
+            />
+          </div>
+          <div class="button-container">
+            <button id="add-value-btn">Add</button>
+            <button id="plot-graph-btn">Plot</button>
+          </div>
+          <table id="data-table">
+            <tr>
+              <th>S.no</th>
+              <th>A</th>
+              <th>B</th>
+            </tr>
+            <tr id="row1"></tr>
+            <tr id="row2"></tr>
+            <tr id="row3"></tr>
+          </table>
+          <div class="plot-container" id="plot-container"></div>
+      </div>
+      <div class="graph">
+        <div id="graph-container" style="width: 100%; max-width: 700px"></div>
+      </div>
+    </div>
+    <script src="dataset1.js"></script>
+    <script src="dataset2.js"></script>
+    <script src="dataset3.js"></script>
+    <script>
+      let datasets = [dataset1, dataset2, dataset3];
+      let selectedDatasetIndex = 0;
+
+      function updateDatasetLabel(value) {
+        const datasetLabel = document.getElementById("dataset-label");
+        datasetLabel.innerHTML = "Data Set: " + value;
+      }
+
+      function addValue() {
+        const sNo = document.getElementById("dataset").value;
+        const selectedDataset = datasets[selectedDatasetIndex];
+        const valueA = selectedDataset[sNo - 1][0];
+        const valueB = selectedDataset[sNo - 1][1];
+
+        const table = document.getElementById("data-table");
+        const newRow = table.insertRow();
+        newRow.innerHTML = `<td>${table.rows.length - 1}</td><td>${valueA}</td><td>${valueB}</td>`;
+        
+      }
+
+      function plotGraph() {
+        const selectedDataset = datasets[selectedDatasetIndex];
+      
+        const xValues = selectedDataset.map((item) => item.x);
+        const yValues = selectedDataset.map((item) => item.y);
+      
+        const trace = {
+          x: xValues,
+          y: yValues,
+          mode: "lines",
+          marker: {
+            color: getRandomColor(), // Assign a random color
+          },
+        };
+      
+        const data = [trace];
+      
+        const layout = {
+          xaxis: { range: [0, 0.004], title: "Time(s)" },
+          yaxis: { range: [0, 12], title: "Voltage(V)" },
+        };
+      
+        Plotly.newPlot("graph-container", data, layout);
+      }
+      
+      function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+      
+
+      document.getElementById("add-value-btn").addEventListener("click", addValue);
+      document.getElementById("plot-graph-btn").addEventListener("click", plotGraph);
+      document.getElementById("dataset").addEventListener("input", function (event) {
+        selectedDatasetIndex = parseInt(event.target.value) - 1;
+      });
+    </script>
+  </body>
+</html>
