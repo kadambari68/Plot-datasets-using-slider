@@ -1,5 +1,5 @@
 # Plot-datasets-using-slider
-Data Plotter using slider which takes values from datasets using plotly.js
+Data Plotter using slider which takes values from datasets using plotly.js https://kadambari68.github.io/Plot-datasets-using-slider/
 
 A task provided by IIT Roorkee mentor as a part of summer internship at virtual labs 
 
